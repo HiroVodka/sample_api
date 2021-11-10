@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 module V1
   class DailyReports < Grape::API
-    resources "daily-reports" do
+    resources 'daily-reports' do
       desc 'index'
       get '/' do
         @daily_reports = DailyReport.all
