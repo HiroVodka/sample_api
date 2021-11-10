@@ -1,0 +1,8 @@
+# encoding: utf-8
+
+create_table "daily_reports", id: :bigint, unsigned: true, force: :cascade, comment: "日報" do |t|
+  t.string "title", null: false
+  t.text "body", null: false
+  t.datetime "updated_at", precision: 6, null: false
+  t.datetime "created_at", precision: 6, null: false
+end
