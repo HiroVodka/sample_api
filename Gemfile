@@ -30,6 +30,9 @@ gem 'rack-cors'
 gem 'ridgepole'
 
 gem 'grape'
+gem 'grape-entity'
+gem 'grape-swagger'
+gem 'grape-swagger-entity'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console

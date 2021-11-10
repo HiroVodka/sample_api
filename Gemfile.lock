@@ -99,6 +99,14 @@ GEM
       mustermann-grape (~> 1.0.0)
       rack (>= 1.3.0)
       rack-accept
+    grape-entity (0.10.1)
+      activesupport (>= 3.0.0)
+      multi_json (>= 1.3.2)
+    grape-swagger (1.4.2)
+      grape (~> 1.3)
+    grape-swagger-entity (0.5.1)
+      grape-entity (>= 0.6.0)
+      grape-swagger (>= 1.2.0)
     i18n (1.8.11)
       concurrent-ruby (~> 1.0)
     listen (3.7.0)
@@ -115,6 +123,7 @@ GEM
     mini_portile2 (2.6.1)
     minitest (5.14.4)
     msgpack (1.4.2)
+    multi_json (1.15.0)
     mustermann (1.1.1)
       ruby2_keywords (~> 0.0.1)
     mustermann-grape (1.0.1)
@@ -236,6 +245,9 @@ DEPENDENCIES
   byebug
   factory_bot_rails
   grape
+  grape-entity
+  grape-swagger
+  grape-swagger-entity
   listen (~> 3.2)
   mysql2 (>= 0.4.4)
   puma (~> 4.1)

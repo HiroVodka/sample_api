@@ -6,5 +6,7 @@ module V1
     format :json
 
     mount V1::DailyReports
+
+    add_swagger_documentation
   end
 end
