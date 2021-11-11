@@ -3,10 +3,13 @@
 module V1
   class DailyReports < Grape::API
     resources 'daily-reports' do
-      desc 'index'
+      before { authenticate_user! }
+
+      desc '一覧'
       get '/' do
         @daily_reports = DailyReport.all
       end
+
       desc '詳細'
       params do
         requires :id, type: Integer
