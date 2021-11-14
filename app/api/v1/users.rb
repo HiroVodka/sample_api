@@ -30,6 +30,7 @@ module V1
       desc '詳細'
       get '/account' do
         @user = current_user
+        present @user, with: Entities::UserEntity
       end
     end
   end

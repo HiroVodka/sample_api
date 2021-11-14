@@ -1,9 +1,7 @@
 module V1
   module Entities
-    class User < Grape::Entity
-      expose :id
-      expose :name
-      expose :email
+    class UserEntity < Grape::Entity
+      expose :id, :name, :email
     end
   end
 end
