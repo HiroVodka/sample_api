@@ -15,4 +15,5 @@ create_table "users", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=ut
   t.datetime "created_at", precision: 6, null: false
   t.datetime "updated_at", precision: 6, null: false
   t.index [:auth_token], unique: true
+  t.index [:email], unique: true
 end

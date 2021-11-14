@@ -2,7 +2,7 @@
 
 module V1
   class Root < Grape::API
-    class Unauthorized < StandardError; end
+    class UnauthorizedError < StandardError; end
     version :v1
     format :json
 
@@ -14,7 +14,7 @@ module V1
       rack_response e.to_json, 400
     end
 
-    rescue_from Unauthorized do
+    rescue_from UnauthorizedError do
       error_response(message: 'Unauthorized error', status: 401)
     end
 
@@ -25,14 +25,18 @@ module V1
 
     helpers do
       def authenticate_user!
-        raise Unauthorized unless current_user
+        raise render_401 unless current_user
       end
 
       def current_user
-        raise Unauthorized unless headers['Authorization']
+        auth_token = headers['Authorization']&.gsub(/^Bearer\s/, '')
+        user = User.find_by(auth_token: auth_token)
+        return render_401 unless user
+        user
+      end
 
-        token = headers['Authorization'].gsub(/^Bearer\s/, '')
-        User.find_by(token: token)
+      def render_401
+        raise UnauthorizedError
       end
     end
 
