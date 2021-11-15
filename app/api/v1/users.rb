@@ -20,9 +20,9 @@ module V1
         requires :password, type: String
       end
       post '/signin' do
-        @user = User.find_by(email: params[:email])
+        @user = User.find_by!(email: params[:email])
 
-        render_401 unless @user&.authenticate(params[:password])
+        render_404 unless @user.authenticate(params[:password])
 
         { auth_token: @user.auth_token }
       end

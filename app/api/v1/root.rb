@@ -6,6 +6,10 @@ module V1
     version :v1
     format :json
 
+    rescue_from UnauthorizedError do
+      rack_response({ message: 'Unauthorized error', status: 401 }.to_json, 401)
+    end
+
     rescue_from ActiveRecord::RecordNotFound do |e|
       rack_response({ message: e.message, status: 404 }.to_json, 404)
     end
@@ -18,14 +22,10 @@ module V1
       rack_response e.to_json, 400
     end
 
-    rescue_from UnauthorizedError do
-      error_response(message: 'Unauthorized error', status: 401)
+    # 開発環境でエラー詳細を見たい場合はコメントアウト
+    rescue_from :all do |e|
+      rack_response({ message: e.message, status: 500 }.to_json, 500)
     end
-
-    # 開発環境でエラー詳細を見たいためコメントアウト
-    # rescue_from :all do |e|
-    #   error_response(message: "Internal server error", status: 500)
-    # end
 
     helpers do
       def authenticate_user!
