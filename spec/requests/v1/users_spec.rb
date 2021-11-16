@@ -18,7 +18,7 @@ RSpec.describe "User", type: :request do
       it "201が返り、userが新規作成されること" do
         expect { requested }.to change { User.count }.from(0).to(1)
         expect(response).to have_http_status 201
-        
+
         user = User.first
         expect(user.name).to eq "test"
         expect(user.email).to eq "example@example.com"
@@ -67,13 +67,13 @@ RSpec.describe "User", type: :request do
 
       it "500エラーが返ること" do
         requested
-        
+
         expect(response.body).to eq message
       end
     end
   end
 
-  describe "POST /users/signup" do
+  describe "POST /users/signin" do
     def requested
       post "/v1/users/signin", params: params.to_json, headers: { "Content-Type": "application/json" }
     end
@@ -124,7 +124,91 @@ RSpec.describe "User", type: :request do
     end
 
     context "500" do
-      
+      let(:params) do
+        {
+          name: "test",
+          email: "example@example.com",
+          password: "Test1234"
+        }
+      end
+      let(:message) do
+        {
+          message: "StandardError",
+          status: 500
+        }.to_json
+      end
+
+      before { allow(User).to receive(:find_by!).and_raise(StandardError) }
+
+      it "500エラーが返ること" do
+        requested
+
+        expect(response).to have_http_status 500
+        expect(response.body).to eq message
+      end
+    end
+  end
+
+  describe "GET /users/:id" do
+    def requested
+      get "/v1/users/account", headers: @env
+    end
+    let!(:user) { create(:user, name: "test", email: "example@example.com", id: 1) }
+
+    context "200" do
+      before { authenticate(user) }
+
+      let(:json) do
+        {
+          id: 1,
+          name: "test",
+          email: "example@example.com"
+        }.to_json
+      end
+
+      it "200でユーザー情報が返ること" do
+        requested
+
+        expect(response).to have_http_status 200
+        expect(response.body).to eq json
+      end
+    end
+
+    context "401" do
+      let(:message) do
+        {
+          message: "Unauthorized error",
+          status: 401
+        }.to_json
+      end
+
+      it "401エラーが返ること" do
+        @env = []
+        requested
+
+        expect(response).to have_http_status 401
+        expect(response.body).to eq message
+      end
+    end
+
+    context "500" do
+      before { authenticate(user) }
+
+      let(:message) do
+        {
+          message: "StandardError",
+          status: 500
+        }.to_json
+      end
+
+      before { allow(User).to receive(:find_by).and_raise(StandardError) }
+
+      it "500エラーが返ること" do
+        requested
+
+        expect(response).to have_http_status 500
+        expect(response.body).to eq message
+      end
     end
   end
 end
