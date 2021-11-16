@@ -1,6 +1,6 @@
 version: '3.7'
 
-services: 
+services:
   db:
     image: mysql:5.7
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
@@ -17,12 +17,12 @@ services:
     depends_on:
       - db
     build:
-      context: ./api/
+      context: .
       dockerfile: Dockerfile
     ports:
       - 3000:3000
     volumes:
-      - ./api:/app
+      - .:/app
     command: /bin/sh -c "rm -f /app/tmp/pids/server.pid && rails server -b 0.0.0.0"
 volumes:
   mysql-db:
