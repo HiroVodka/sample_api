@@ -175,6 +175,8 @@ RSpec.describe 'DailyReports', type: :request do
         }.to_json
       end
       it '201が返り、user:1のdaily_reportが作成されること' do
+        requested
+
         expect(response).to have_http_status 201
         expect(response.body).to eq json
       end
