@@ -36,10 +36,14 @@ jobs:
             ${{ runner.os }}-
 
       - name: Install Bundler
+        env:
+          RAILS_ENV: test
         run: gem install bundler --no-document -v $(grep "BUNDLED WITH" -1 Gemfile.lock | tail -n 1)
       - name: Bundle install
         run: bundle install --path=vendor/bundle --jobs 4 --retry 3
       - name: Migration
+        env:
+          RAILS_ENV: test
         run: |
           cp config/database.yml.ci config/database.yml
           bundle exec rails ridgepole:apply
