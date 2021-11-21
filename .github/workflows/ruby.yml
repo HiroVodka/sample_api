@@ -22,6 +22,8 @@ jobs:
         uses: actions/setup-ruby@v1
         with:
           ruby-version: 2.7.4
+        env:
+          RAILS_ENV: test
 
       - name: Cache bundle gems
         uses: actions/cache@v2
