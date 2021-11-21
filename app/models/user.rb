@@ -4,6 +4,8 @@ class User < ApplicationRecord
   has_secure_password
   has_secure_token :auth_token
 
+  has_many :daily_reports, dependent: :destroy
+
   validates :email, presence: true, length: { maximum: 254 }
   validates :email, format: { with: /\A([\w+\-]\.?)+@[a-z\d\-]+(\.[a-z\d\-]+)*\.[a-z]+\z/, if: -> { email.present? } }
   validates :password, presence: true
