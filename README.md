@@ -1,3 +1,4 @@
+![](https://github.com/HiroVodka/sample_api/workflows/rspec/badge.svg)
 # README
 日報管理API
 
