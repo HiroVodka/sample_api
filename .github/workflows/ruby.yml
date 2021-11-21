@@ -1,27 +1,31 @@
-name: Ruby
+name: rspec
 
 on: [push]
-
 jobs:
-  test:
-
+  build:
     runs-on: ubuntu-latest
+    services:
+      db:
+        image: mysql:5.7
+        ports:
+          - 3306:3306
+        env:
+          MYSQL_ROOT_PASSWORD: password
+          MYSQL_DATABASE: sample
+          MYSQL_PASSWORD: password
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Setup docker
-      shell: bash
-      run: |
-        # イメージのビルド
-        docker-compose build
-        # データベースの作成
-        docker-compose run api rake db:create
-      env:
-        RAILS_ENV: test
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
-    - name: Run RSpec
-      shell: bash
-      run: |
-        docker-compose run api bundle exec rspec
-      env:
-        RAILS_ENV: test
+      - name: Setup ruby
+        uses: ruby/setup-ruby@v1.52.0
+        with:
+          ruby-version: 2.7.4
+          bundler-cache: true
+
+      - name: Migration
+        run: |
+          bundle exec rails rails ridgepole:apply
+      - name: Run rspec
+        run: bundle exec rspec spec/requests/
