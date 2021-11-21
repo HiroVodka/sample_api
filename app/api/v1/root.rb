@@ -24,9 +24,9 @@ module V1
     end
 
     # 開発環境でエラー詳細を見たい場合はコメントアウト
-    rescue_from :all do |e|
-      rack_response({ message: e.message, status: 500 }.to_json, 500)
-    end
+    # rescue_from :all do |e|
+    #   rack_response({ message: e.message, status: 500 }.to_json, 500)
+    # end
 
     helpers do
       def authenticate_user!
