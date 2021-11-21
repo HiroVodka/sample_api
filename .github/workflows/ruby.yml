@@ -22,7 +22,16 @@ jobs:
         uses: actions/setup-ruby@v1
         with:
           ruby-version: 2.7.4
-          bundler-cache: true
+
+      - name: Cache bundle gems
+        uses: actions/cache@v2
+        with:
+          path: vendor/bundle
+          key: ${{ runner.os }}-gem-${{ hashFiles('**/Gemfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-gem-${{ env.cache-name }}-
+            ${{ runner.os }}-gem-
+            ${{ runner.os }}-
 
       - name: Migration
         run: |
