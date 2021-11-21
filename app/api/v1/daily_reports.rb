@@ -73,6 +73,53 @@ module V1
         status 204
         { message: '削除に成功しました', status: 204 }.to_json
       end
+
+      route_param :daily_report_id do
+        resources 'comments' do
+          before { authenticate_user! }
+
+          desc '新規作成'
+          params do
+            requires :daily_report_id, type: Integer
+            requires :body, type: String
+          end
+          post '/' do
+            @daily_report = DailyReport.find(params[:daily_report_id])
+            comment = Comment.new(user_id: current_user.id, body: params[:body])
+            comment.daily_report = @daily_report
+            comment.save!
+            @daily_report.reload
+            present @daily_report, with: Entities::DailyReportEntity
+          end
+
+          desc '更新'
+          params do
+            requires :daily_report_id, type: Integer
+            requires :id, type: Integer
+            optional :body, type: String
+          end
+          put ':id' do
+            comment = Comment.find_by!(user_id: current_user.id, daily_report_id: params[:daily_report_id],
+                                       id: params[:id])
+            comment.update!(body: params[:body])
+            @daily_report = DailyReport.find(params[:daily_report_id])
+            present @daily_report, with: Entities::DailyReportEntity
+          end
+
+          desc '削除'
+          params do
+            requires :daily_report_id, type: Integer
+            requires :id, type: Integer
+          end
+          delete ':id' do
+            comment = Comment.find_by!(user_id: current_user.id, daily_report_id: params[:daily_report_id],
+                                       id: params[:id])
+            comment.destroy!
+            status 204
+            { message: '削除に成功しました', status: 204 }.to_json
+          end
+        end
+      end
     end
   end
 end

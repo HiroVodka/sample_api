@@ -14,7 +14,7 @@ namespace :ridgepole do
   private
 
   def ridgepole(*options)
-    command = ['bundle exec ridgepole -f db/Schemafile', '-c config/database.yml', "-E #{Rails.env}"]
+    command = ['bundle exec ridgepole -f Schemafile', '-c config/database.yml', "-E #{Rails.env}"]
     system((command + options).join(' '))
 
     unless Rails.env.production?
