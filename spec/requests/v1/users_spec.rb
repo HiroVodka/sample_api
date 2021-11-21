@@ -1,46 +1,48 @@
-require "rails_helper"
+# frozen_string_literal: true
 
-RSpec.describe "User", type: :request do
-  describe "POST /users/signup" do
+require 'rails_helper'
+
+RSpec.describe 'User', type: :request do
+  describe 'POST /users/signup' do
     def requested
-      post "/v1/users/signup", params: params.to_json, headers: { "Content-Type": "application/json" }
+      post '/v1/users/signup', params: params.to_json, headers: { "Content-Type": 'application/json' }
     end
 
-    context "201" do
+    context '201' do
       let(:params) do
         {
-          name: "test",
-          email: "example@example.com",
-          password: "Test1234"
+          name: 'test',
+          email: 'example@example.com',
+          password: 'Test1234'
         }
       end
 
-      it "201が返り、userが新規作成されること" do
+      it '201が返り、userが新規作成されること' do
         expect { requested }.to change { User.count }.from(0).to(1)
         expect(response).to have_http_status 201
 
         user = User.first
-        expect(user.name).to eq "test"
-        expect(user.email).to eq "example@example.com"
+        expect(user.name).to eq 'test'
+        expect(user.email).to eq 'example@example.com'
       end
     end
 
-    context "400" do
+    context '400' do
       let(:params) do
         {
-          name: "test",
-          email: "example@example.com",
-          password: "1234"
+          name: 'test',
+          email: 'example@example.com',
+          password: '1234'
         }
       end
       let(:message) do
         {
-          message: "バリデーションに失敗しました: パスワードは不正な値です, パスワードは8文字以上で入力してください",
+          message: 'バリデーションに失敗しました: パスワードは不正な値です, パスワードは8文字以上で入力してください',
           status: 400
         }.to_json
       end
 
-      it "400エラーが返ること" do
+      it '400エラーが返ること' do
         requested
 
         expect(response).to have_http_status 400
@@ -48,24 +50,24 @@ RSpec.describe "User", type: :request do
       end
     end
 
-    context "500" do
+    context '500' do
       let(:params) do
         {
-          name: "test",
-          email: "example@example.com",
-          password: "Test1234"
+          name: 'test',
+          email: 'example@example.com',
+          password: 'Test1234'
         }
       end
       let(:message) do
         {
-          message: "StandardError",
+          message: 'StandardError',
           status: 500
         }.to_json
       end
 
       before { allow(User).to receive(:new).and_raise(StandardError) }
 
-      it "500エラーが返ること" do
+      it '500エラーが返ること' do
         requested
 
         expect(response.body).to eq message
@@ -73,27 +75,27 @@ RSpec.describe "User", type: :request do
     end
   end
 
-  describe "POST /users/signin" do
+  describe 'POST /users/signin' do
     def requested
-      post "/v1/users/signin", params: params.to_json, headers: { "Content-Type": "application/json" }
+      post '/v1/users/signin', params: params.to_json, headers: { "Content-Type": 'application/json' }
     end
 
     let!(:user) { create(:user) }
 
-    context "201" do
+    context '201' do
       let(:params) do
         {
-          email: "example@example.com",
-          password: "Test1234"
+          email: 'example@example.com',
+          password: 'Test1234'
         }
       end
       let(:json) do
         {
-          auth_token: "#{user.auth_token}"
+          auth_token: user.auth_token.to_s
         }.to_json
       end
 
-      it "201が返り、auth_tokenが返ること" do
+      it '201が返り、auth_tokenが返ること' do
         requested
 
         expect(response).to have_http_status 201
@@ -101,21 +103,21 @@ RSpec.describe "User", type: :request do
       end
     end
 
-    context "401" do
+    context '401' do
       let(:params) do
         {
-          email: "example@example.com",
-          password: "Test1111"
+          email: 'example@example.com',
+          password: 'Test1111'
         }
       end
       let(:message) do
         {
-          message: "Unauthorized error",
+          message: 'Unauthorized error',
           status: 401
         }.to_json
       end
 
-      it "401エラーが返ること" do
+      it '401エラーが返ること' do
         requested
 
         expect(response).to have_http_status 401
@@ -123,24 +125,24 @@ RSpec.describe "User", type: :request do
       end
     end
 
-    context "500" do
+    context '500' do
       let(:params) do
         {
-          name: "test",
-          email: "example@example.com",
-          password: "Test1234"
+          name: 'test',
+          email: 'example@example.com',
+          password: 'Test1234'
         }
       end
       let(:message) do
         {
-          message: "StandardError",
+          message: 'StandardError',
           status: 500
         }.to_json
       end
 
       before { allow(User).to receive(:find_by!).and_raise(StandardError) }
 
-      it "500エラーが返ること" do
+      it '500エラーが返ること' do
         requested
 
         expect(response).to have_http_status 500
@@ -149,24 +151,24 @@ RSpec.describe "User", type: :request do
     end
   end
 
-  describe "GET /users/:id" do
+  describe 'GET /users/:id' do
     def requested
-      get "/v1/users/account", headers: @env
+      get '/v1/users/account', headers: @env
     end
-    let!(:user) { create(:user, name: "test", email: "example@example.com", id: 1) }
+    let!(:user) { create(:user, name: 'test', email: 'example@example.com', id: 1) }
 
-    context "200" do
+    context '200' do
       before { authenticate(user) }
 
       let(:json) do
         {
           id: 1,
-          name: "test",
-          email: "example@example.com"
+          name: 'test',
+          email: 'example@example.com'
         }.to_json
       end
 
-      it "200でユーザー情報が返ること" do
+      it '200でユーザー情報が返ること' do
         requested
 
         expect(response).to have_http_status 200
@@ -174,15 +176,15 @@ RSpec.describe "User", type: :request do
       end
     end
 
-    context "401" do
+    context '401' do
       let(:message) do
         {
-          message: "Unauthorized error",
+          message: 'Unauthorized error',
           status: 401
         }.to_json
       end
 
-      it "401エラーが返ること" do
+      it '401エラーが返ること' do
         @env = []
         requested
 
@@ -191,19 +193,19 @@ RSpec.describe "User", type: :request do
       end
     end
 
-    context "500" do
+    context '500' do
       before { authenticate(user) }
 
       let(:message) do
         {
-          message: "StandardError",
+          message: 'StandardError',
           status: 500
         }.to_json
       end
 
       before { allow(User).to receive(:find_by).and_raise(StandardError) }
 
-      it "500エラーが返ること" do
+      it '500エラーが返ること' do
         requested
 
         expect(response).to have_http_status 500

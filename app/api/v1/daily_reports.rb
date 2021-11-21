@@ -19,7 +19,7 @@ module V1
         parsed_params = JSON.parse(params.keys.first)
 
         if parsed_params.blank?
-          @daily_reports = DailyReport.all.order(id: "DESC")
+          @daily_reports = DailyReport.all.order(id: 'DESC')
         else
           form = Search::DailyReport.new(parsed_params)
 
@@ -71,7 +71,7 @@ module V1
         daily_report = DailyReport.find_by!(id: params[:id], user_id: current_user.id)
         daily_report.destroy!
         status 204
-        { message: "削除に成功しました", status: 204 }.to_json
+        { message: '削除に成功しました', status: 204 }.to_json
       end
     end
   end
