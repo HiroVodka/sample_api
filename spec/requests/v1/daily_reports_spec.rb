@@ -27,21 +27,24 @@ RSpec.describe 'DailyReports', type: :request do
             user_id: 2,
             title: 'test',
             body: 'hogehoge',
-            created_at: other_user_daily_report.created_at
+            created_at: other_user_daily_report.created_at,
+            comments: []
           },
           {
             id: 2,
             user_id: 1,
             title: 'test',
             body: 'hogehoge',
-            created_at: daily_report_2.created_at
+            created_at: daily_report_2.created_at,
+            comments: []
           },
           {
             id: 1,
             user_id: 1,
             title: 'test',
             body: 'hogehoge',
-            created_at: daily_report_1.created_at
+            created_at: daily_report_1.created_at,
+            comments: []
           }
         ].to_json
       end
@@ -61,14 +64,16 @@ RSpec.describe 'DailyReports', type: :request do
               user_id: 1,
               title: 'test',
               body: 'hogehoge',
-              created_at: daily_report_2.created_at
+              created_at: daily_report_2.created_at,
+              comments: []
             },
             {
               id: 1,
               user_id: 1,
               title: 'test',
               body: 'hogehoge',
-              created_at: daily_report_1.created_at
+              created_at: daily_report_1.created_at,
+              comments: []
             }
           ].to_json
         end
@@ -115,7 +120,8 @@ RSpec.describe 'DailyReports', type: :request do
           user_id: 1,
           title: 'test',
           body: 'hogehoge',
-          created_at: daily_report.created_at
+          created_at: daily_report.created_at,
+          comments: []
         }.to_json
       end
       it '200が返り、id:1のdaily_reportが返ること' do
@@ -164,7 +170,8 @@ RSpec.describe 'DailyReports', type: :request do
           user_id: 1,
           title: 'test',
           body: '今日やったこと',
-          created_at: daily_report.created_at
+          created_at: daily_report.created_at,
+          comments: []
         }.to_json
       end
       it '201が返り、user:1のdaily_reportが作成されること' do
@@ -189,17 +196,18 @@ RSpec.describe 'DailyReports', type: :request do
     end
     let(:path) { 1 }
 
-    context '201' do
+    context '200' do
       let(:json) do
         {
           id: daily_report.id,
           user_id: 1,
           title: 'test_after',
           body: 'body_after',
-          created_at: daily_report.created_at
+          created_at: daily_report.created_at,
+          comments: []
         }.to_json
       end
-      it '201が返り、user:1のdaily_reportが作成されること' do
+      it '200が返り、user:1のdaily_reportが作成されること' do
         requested
 
         expect(response).to have_http_status 200
