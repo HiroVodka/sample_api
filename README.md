@@ -1,24 +1,12 @@
 # README
+日報管理API
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+## 環境構築
+cloneしてからdockerでアプリを立ち上げてください🙇‍♀️
 
-Things you may want to cover:
+`docker-compose up --build -d`
+↑DBがセットアップされてrailsサーバーが立ち上がります
+コンテナ内へは`docker-compose exec api bash`で入れます
 
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+## テスト
+コンテナ内で`rspec spec/requests/`を実行してください
