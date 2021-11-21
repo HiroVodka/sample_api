@@ -3,6 +3,7 @@
 module V1
   class Root < Grape::API
     class UnauthorizedError < StandardError; end
+
     version :v1
     format :json
 
@@ -10,12 +11,8 @@ module V1
       rack_response({ message: 'Unauthorized error', status: 401 }.to_json, 401)
     end
 
-    rescue_from ActiveRecord::RecordNotFound do |e|
-      rack_response({ message: e.message, status: 404 }.to_json, 404)
-    end
-
-    rescue_from ActiveRecord::RecordInvalid do |e|
-      rack_response({ message: e.message, status: 400 }.to_json, 400)
+    rescue_from ActiveRecord::RecordNotFound do |_e|
+      rack_response({ message: 'リソースが存在しません', status: 404 }.to_json, 404)
     end
 
     rescue_from Grape::Exceptions::ValidationErrors do |e|
@@ -23,9 +20,9 @@ module V1
     end
 
     # 開発環境でエラー詳細を見たい場合はコメントアウト
-    rescue_from :all do |e|
-      rack_response({ message: e.message, status: 500 }.to_json, 500)
-    end
+    # rescue_from :all do |e|
+    #   rack_response({ message: e.message, status: 500 }.to_json, 500)
+    # end
 
     helpers do
       def authenticate_user!
@@ -36,6 +33,7 @@ module V1
         auth_token = headers['Authorization']&.gsub(/^Bearer\s/, '')
         user = User.find_by(auth_token: auth_token)
         return render_401 unless user
+
         user
       end
 
