@@ -5,7 +5,9 @@
 cloneしてからdockerでアプリを立ち上げてください🙇‍♀️
 
 `docker-compose up --build -d`
+
 ↑DBがセットアップされてrailsサーバーが立ち上がります
+
 コンテナ内へは`docker-compose exec api bash`で入れます
 
 ## テスト
