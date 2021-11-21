@@ -11,7 +11,7 @@ jobs:
           - 3306:3306
         env:
           MYSQL_ROOT_PASSWORD: password
-          MYSQL_DATABASE: sample
+          MYSQL_DATABASE: test
           MYSQL_PASSWORD: password
 
     steps:
