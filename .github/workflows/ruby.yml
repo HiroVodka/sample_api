@@ -1,0 +1,52 @@
+name: rspec
+
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Setup_mysql
+        uses: mirromutth/mysql-action@v1.1
+        with:
+          host port: 3306
+          container port: 3306
+          character set: 'utf8mb4'
+          collation server: 'utf8mb4_unicode_ci'
+          mysql version: '5.7'
+          mysql database: 'test'
+          mysql root password: 'password'
+
+      - name: Setup ruby
+        uses: actions/setup-ruby@v1
+        with:
+          ruby-version: 2.7.4
+        env:
+          RAILS_ENV: test
+
+      - name: Cache bundle gems
+        uses: actions/cache@v2
+        with:
+          path: vendor/bundle
+          key: ${{ runner.os }}-gem-${{ hashFiles('**/Gemfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-gem-${{ env.cache-name }}-
+            ${{ runner.os }}-gem-
+            ${{ runner.os }}-
+
+      - name: Install Bundler
+        env:
+          RAILS_ENV: test
+        run: gem install bundler --no-document -v $(grep "BUNDLED WITH" -1 Gemfile.lock | tail -n 1)
+      - name: Bundle install
+        run: bundle install --path=vendor/bundle --jobs 4 --retry 3
+      - name: Migration
+        env:
+          RAILS_ENV: test
+        run: |
+          cp config/database.yml.ci config/database.yml
+          bundle exec rails ridgepole:apply
+      - name: Run rspec
+        run: bundle exec rspec spec/requests/
