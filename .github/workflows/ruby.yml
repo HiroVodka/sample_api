@@ -1,38 +1,27 @@
-name: Test
+name: Ruby
+
 on: [push]
+
 jobs:
-  run:
+  test:
+
     runs-on: ubuntu-latest
 
-    services:
-      mysql:
-        image: mysql:5.7
-        env:
-          MYSQL_ROOT_PASSWORD: password
-          MYSQL_DATABASE: sample
-          MYSQL_PASSWORD: password
-    container:
-      image: ruby:2.7.4
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup docker
+      shell: bash
+      run: |
+        # イメージのビルド
+        docker-compose build
+        # データベースの作成
+        docker-compose run api rake db:create
       env:
         RAILS_ENV: test
-        DATABASE_HOST: test
 
-    steps:
-      - uses: actions/checkout@v2
-      - name: Cache bundle gems
-        uses: actions/cache@v2
-        with:
-          path: vendor/bundle
-          key: ${{ runner.os }}-gem-${{ hashFiles('**/Gemfile.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-gem-${{ env.cache-name }}-
-            ${{ runner.os }}-gem-
-            ${{ runner.os }}-
-      - name: Install Bundler
-        run: gem install bundler --no-document -v $(grep "BUNDLED WITH" -1 Gemfile.lock | tail -n 1)
-      - name: Bundle install
-        run: bundle install --path=vendor/bundle --jobs 4 --retry 3
-      - name: DB setup
-        run: bundle exec rails ridgepole:apply
-      - name: Run rspec
-        run: bundle exec rspec
+    - name: Run RSpec
+      shell: bash
+      run: |
+        docker-compose run api bundle exec rspec
+      env:
+        RAILS_ENV: test
